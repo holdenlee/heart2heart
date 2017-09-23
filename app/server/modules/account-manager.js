@@ -15,7 +15,7 @@ var dbPort = process.env.DB_PORT || 27017;
 var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
 db.open(function(e, d){
 	if (e) {
-		console.log(e);
+	    console.log(e);
 	} else {
 		if (process.env.NODE_ENV == 'live') {
 			db.authenticate(process.env.DB_USER, process.env.DB_PASS, function(e, res) {
@@ -186,10 +186,10 @@ exports.delAllRecords = function(callback)
 exports.finishConv = function(id, callback)
 {
     //getObjectId(id)
-    console.log(id);
-    console.log(typeof(id));
+    //console.log(id);
+    //console.log(typeof(id));
     accounts.findOne({_id: id}, function(e, o){
-	console.log(o);
+	//console.log(o);
 	o.past.push(o.current);
 	//o.past = o.past + o.current;
 	o.current = null;
@@ -202,10 +202,10 @@ exports.finishConv = function(id, callback)
 exports.skipConv = function(id, excl, callback)
 {
     //getObjectId(id)
-    console.log(id);
-    console.log(typeof(id));
+    //console.log(id);
+    //console.log(typeof(id));
     accounts.findOne({_id: id}, function(e, o){
-	console.log(o);
+	//console.log(o);
 	if (excl){o.excluded.push(o.current)};
 	//o.past = o.past + o.current;
 	o.current = null;
@@ -269,18 +269,18 @@ exports.match = function(id, callback)
 	    callback(e0);
 	    return;
 	}
-	console.log('1');
+	//console.log('1');
 	exports.getAllUnmatched( function(e, accounts){
 	    if (!(e==null)){
 		console.log(e);
 		callback(e);
 		return;
 	    }
-	    console.log(accounts);
+	    //console.log(accounts);
 	    var sorted = accounts.sort(function(a1,a2){
 		if (a1<a2) {return -1};
 		if (a1==a2) {return 0};
-		return 1;})
+		return 1;});
 	    var filtered = sorted.filter( function(elt) {
 		return o.past.indexOf(String(elt._id))==-1 &&
 			//not in excluded
@@ -290,33 +290,42 @@ exports.match = function(id, callback)
 		    String(elt._id) != id &&
 		    !elt.onBreak
 	    });
-	    console.log(filtered);
+	    //console.log(filtered);
 	    if (filtered.length>0) {
 		var first_one = filtered[0];
 		var other_id = String(first_one._id);
 		//can be done in parallel, but I'm not going to bother
 		o.matched = true;
 		o.current = other_id;
-		console.log('2');
+		//console.log('2');
 		exports.save(o, function(e2) {//{safe: true}
-		    console.log('2.5');
+		    //console.log('2.5');
 		    //do the same for the other guy
 		    findById(other_id, function(e3,o2){
-			console.log('3');
-			console.log(o2);
+			//console.log('3');
+			//console.log(o2);
 			if (o2){
 			    o2.matched = true;
 			    o2.current = id;
 			    //now save
-			    exports.save(o2, function(e4) {callback(e4);return});
+			    exports.save(o2, function(e4) {
+				if (!(e4==null)) {
+				    callback(e4);
+				} else{
+				    callback(null, o)
+				};
+				return;
+			    });
 			};
 		    });
 		});
 	    }else{
-		callback(null);
+	    	callback(null);
 	    };
 	});
     });
+    //callback(null);
+    //return;
 };
 
 exports.include = function(id, id2, callback)

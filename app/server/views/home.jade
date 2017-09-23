@@ -1,25 +1,34 @@
-
 extends layout
 
 block content
 
-	nav.navbar.navbar-default.navbar-fixed-top
-		.container
-			.navbar-header
-				.navbar-brand Heart-to-hearts
-			ul.nav.navbar-nav.navbar-right
-				li
-					.navbar-btn#btn-logout.btn.btn-default
-						| Sign Out
-
-	include account
-	include modals/alert
-	include modals/confirm
-
+  nav.navbar.navbar-default.navbar-fixed-top
+    //navbar-static-top
+    .container
+      .navbar-header
+        .navbar-brand Heart-to-hearts
+      #navbar.collapse.navbar-collapse
+        ul.nav.navbar-nav
+          li
+            a(href='/hearts') My heart-to-hearts
+          li
+            a(href='/home') My account
+          li
+            .navbar-btn#btn-logout.btn.btn-default
+              | Sign Out
+      //ul.nav.navbar-nav.navbar-right
+      //  li
+      //    .navbar-btn#btn-logout.btn.btn-default
+      //      | Sign Out
+  // preset form values if we receive a userdata object //
+  include account
+  include modals/alert
+  include modals/confirm
+  
 block scripts
-	script(src='/vendor/jquery-2.2.3.min.js')
-	script(src='/vendor/jquery.form.min.js')
-	script(src='/vendor/bootstrap.min.js')
-	script(src='/js/views/home.js')
-	script(src='/js/controllers/homeController.js')
-	script(src='/js/form-validators/accountValidator.js')
+  script(src='/vendor/jquery-2.2.3.min.js')
+  script(src='/vendor/jquery.form.min.js')
+  script(src='/vendor/bootstrap.min.js')
+  script(src='/js/views/home.js')
+  script(src='/js/controllers/homeController.js')
+  script(src='/js/form-validators/accountValidator.js')

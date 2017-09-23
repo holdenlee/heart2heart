@@ -17,7 +17,7 @@ input(type='hidden', value= user._id)#userId
 		.form-group
 			label.control-label.col-sm-3 Email
 			.col-sm-9
-				input.form-control#email-tf(type='text', name='email', value= user.email)
+				input.form-control#email-tf(type='text', name='email', value= user.email).disabled
 		// deleted //
 		.form-group
 			label.control-label.col-sm-3 Password
@@ -26,7 +26,7 @@ input(type='hidden', value= user._id)#userId
 
 		hr
 		.form-buttons
-			button(type='button')#account-form-btn1.btn.btn-default
+			//button(type='button')#account-form-btn1.btn.btn-default
 			button(type='submit')#account-form-btn2.btn.btn-primary
 		.clearfix
 

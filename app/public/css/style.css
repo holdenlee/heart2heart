@@ -25,9 +25,6 @@ hr {
 ul {
   margin: 4px 0 0 0;
 }
-ul.heart {
-    list-style-image: url('http://s3.amazonaws.com/pix.iemoji.com/twit33/0551.png');
-}
 label,
 h6 {
   color: #808080;

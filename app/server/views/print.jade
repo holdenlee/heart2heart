@@ -8,6 +8,7 @@ block content
 				tr
 					th(style='width:200px') ID
 					th(style='width:180px') Name
+					th(style='width:180px') Email
 					th(style='width:40px') Matched
 					th(style='width:200px') Current
 					th(style='width:200px') Past
@@ -21,6 +22,7 @@ block content
 					//td= i+1
 					td= accts[i]._id
 					td= accts[i].name
+					td= accts[i].email
 					td= accts[i].matched
 					td= accts[i].current
 					td= accts[i].past

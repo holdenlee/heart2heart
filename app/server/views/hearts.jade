@@ -7,10 +7,19 @@ block content
     .container
       .navbar-header
         .navbar-brand Heart-to-hearts
-      ul.nav.navbar-nav.navbar-right
-        li
-          .navbar-btn#btn-logout.btn.btn-default
-            | Sign Out
+      #navbar.collapse.navbar-collapse
+        ul.nav.navbar-nav
+          li
+            a(href='/hearts') My heart-to-hearts
+          li
+            a(href='/home') My account
+          li
+            .navbar-btn#btn-logout.btn.btn-default
+              | Sign Out
+      //ul.nav.navbar-nav.navbar-right
+      //  li
+      //    .navbar-btn#btn-logout.btn.btn-default
+      //      | Sign Out
   // preset form values if we receive a userdata object //
   - user = typeof(udata) != 'undefined' && udata != null ? udata : { }
   // store the userId on the client side in a hidden input field //
@@ -27,6 +36,7 @@ block content
         p You are currently matched with...
         center
           div(class='person',idn= user.current)
+        p Get in touch and schedule a meal and conversation (or other activity) together sometime this coming week. 
         p
           a(href='/finish') We finished our heart-to-heart.
         p
@@ -39,8 +49,8 @@ block content
           a(href='/break') Turn off re-matching.
       else
         if user.onBreak
-          p You are on break.
-          a(href='/resume') Resume.
+          p Your account is de-activated.
+          a(href='/resume') Activate.
         else
           p You are not currently matched with anyone. We will email you for your next heart-to-heart!
           a(href='/break') Turn off rematching.
@@ -70,7 +80,7 @@ block content
             
       .btm-links
         #update-account
-          a(href='/home') Update account
+          a(href='/home') Update account.
       //button(type='button')#account-form-btn1.btn.btn-default//
 
 block scripts

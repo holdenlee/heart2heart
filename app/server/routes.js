@@ -2,6 +2,7 @@
 //var CT = require('./modules/country-list');
 var AM = require('./modules/account-manager');
 var EM = require('./modules/email-dispatcher');
+var HM = require('./modules/heart-emailer');
 
 var sprintf = require('sprintf-js').sprintf,
     vsprintf = require('sprintf-js').vsprintf
@@ -39,9 +40,9 @@ var getCurrentName = function(o, callback)
 var getNameAndEmail = function(id, callback)
 {
     AM.findById(id, function(e,o) {
-	console.log('getNameAndEmail');
-	console.log(e);
-	console.log(o);
+	//console.log('getNameAndEmail');
+	//console.log(e);
+	//console.log(o);
 	if (o){
 	    callback([o.name, o.email]);
 	}else{
@@ -113,7 +114,7 @@ module.exports = function(app) {
 			}	else{
 			    req.session.user = o;
 			        //getCurrentName(o, function(name, email) {req.session.user.currentName = vsprintf('%s (%s)', [name, email]); console.log(req.session.user)});
-			    console.log(req.session.user);
+			    //console.log(req.session.user);
 			    if (req.body['remember-me'] == 'true'){
 				res.cookie('email', o.email, { maxAge: 900000 });
 				res.cookie('pass', o.pass, { maxAge: 900000 });
@@ -280,12 +281,13 @@ module.exports = function(app) {
 		if (e){
 		    res.redirect('/');
 		}else{
-		    console.log(o);
+		    //console.log(o);
 		    req.session.user = o;
 		    //getFormattedName(o, function(x){
 		    //	if (x){
 		    //req.session.user.currentName = x;
 		    //	}
+		    console.log('rendering hearts');
 		    res.render('hearts', {
 			title : 'Your heart-to-hearts',
 			udata : req.session.user
@@ -330,8 +332,8 @@ module.exports = function(app) {
 	    if (req.session.user == null) {
 		res.redirect('/');
 	    } else {
-		console.log('matching');
-		AM.match(req.session.user._id, function(e){res.redirect('/hearts')})
+		//console.log('matching');
+		HM.matchAndEmail(req.session.user._id, function(e,o){console.log('redirecting match to hearts');res.redirect('/hearts')})
 	    };
 	});
     //THIS SHOULD BE POST
@@ -363,8 +365,9 @@ module.exports = function(app) {
 			    title : 'Your heart-to-hearts',
 			    udata : req.session.user
 			});*/
-			AM.match(this_id, function(e3){
-			    AM.match(other_id, function(e4){
+			HM.matchAndEmail(this_id, function(e3,o3){
+			    HM.matchAndEmail(other_id, function(e4,o4){
+				console.log('redirect to hearts');
 				res.redirect('/hearts');
 			    });
 			});
@@ -400,8 +403,8 @@ module.exports = function(app) {
 			    title : 'Your heart-to-hearts',
 			    udata : req.session.user
 			});*/
-			AM.match(this_id, function(e3){
-			    AM.match(other_id, function(e4){
+			HM.matchAndEmail(this_id, function(e3,o3){
+			    HM.matchAndEmail(other_id, function(e4,o4){
 				res.redirect('/hearts');
 			    });
 			});
