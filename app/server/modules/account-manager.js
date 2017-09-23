@@ -78,7 +78,8 @@ exports.addNewAccount = function(newData, callback)
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
 //matched, past, current. 
-					        newData.freeSince = moment().format('MMMM Do YYYY, h:mm:ss a');
+					        newData.freeSince = moment();
+//o.freeSince = moment();
 					        newData.matched = false;
 					        newData.past = [];
 					        newData.current = null;
@@ -193,6 +194,7 @@ exports.finishConv = function(id, callback)
 	//o.past = o.past + o.current;
 	o.current = null;
 	o.matched = false;
+	o.freeSince = moment();
 	accounts.save(o, {safe: true}, callback);});
 	//attempt to match here
 }
@@ -208,6 +210,7 @@ exports.skipConv = function(id, callback)
 	//o.past = o.past + o.current;
 	o.current = null;
 	o.matched = false;
+	o.freeSince = moment();
 	accounts.save(o, {safe: true}, callback);
     });
 	//attempt to match here
@@ -275,7 +278,9 @@ exports.match = function(id, callback)
 	    }
 	    console.log(accounts);
 	    var sorted = accounts.sort(function(a1,a2){
-		a1.freeSince > a2.freeSince})
+		if (a1<a2) {return -1};
+		if (a1==a2) {return 0};
+		return 1;})
 	    var filtered = sorted.filter( function(elt) {
 		return o.past.indexOf(String(elt._id))==-1 &&
 			//not in excluded
