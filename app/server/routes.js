@@ -98,7 +98,7 @@ module.exports = function(app) {
 				    getFormattedName(o, function(x){
 					if (x){req.session.user.currentName = x;};
 					//req.session.user.currentName = 
-					res.redirect('/home');
+					res.redirect('/hearts');
 				    });
 				}else{
 				    res.render('login', { title: 'Hello - Please Login To Your Account' });
