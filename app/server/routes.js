@@ -383,9 +383,9 @@ module.exports = function(app) {
 		//console.log('matched');
 		var this_id = req.session.user._id;
 		var other_id = req.session.user.current;
-		AM.skipConv(getObjectId(this_id), function(e1){
+		AM.skipConv(getObjectId(this_id), true, function(e1){
 		    //!Why is this a string?
-		    AM.skipConv(getObjectId(other_id), function(e2){
+		    AM.skipConv(getObjectId(other_id), false, function(e2){
 			//! should re-match based on order
 			//data duplication...
 			/*
@@ -419,7 +419,7 @@ module.exports = function(app) {
 		res.redirect('/');
 	    };
 	});
-	app.get('/resume', function(req, res) {
+    app.get('/resume', function(req, res) {
 	    //! if not logged in...
 	    if (req.session.user != null){
 		AM.setBreak(getObjectId(req.session.user._id), false, function(e1){
@@ -437,11 +437,11 @@ module.exports = function(app) {
 	    }else{
 		res.redirect('/');
 	    };
-	});
-
-
+    });
+    
+    
     app.get('/getNameAndEmail', function(req,res) {
-	console.log(req.query);
+	//console.log(req.query);
 	getNameAndEmail(req.query['id'], function(x) {
 	    console.log(x);
 	    if (x){
@@ -451,6 +451,12 @@ module.exports = function(app) {
 	    };
 	});
     });
+    app.get('/include', function(req, res) {
+	AM.include(req.session.user._id, req.query['id'], function (e){
+	    res.redirect('/match');
+	});
+    });
+
 
 	
 	app.get('*', function(req, res) { res.render('404', { title: 'Page Not Found'}); });

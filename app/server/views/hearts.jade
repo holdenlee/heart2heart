@@ -28,9 +28,9 @@ block content
         center
           div(class='person',idn= user.current)
         p
-          a(href='/finish') Finish heart-to-heart.
+          a(href='/finish') We finished our heart-to-heart.
         p
-          a(href='/skip') Skip heart-to-heart.
+          a(href='/skip') We decided to skip our heart-to-heart.
         if user.onBreak
           p You will not be automatically re-matched when you finish your conversation.
           a(href='/resume') Turn on re-matching.
@@ -48,14 +48,26 @@ block content
       //When matched, "finish", "skip" ("Are you sure?")
 
       // = user.currentName
+      if user.past.length > 0
+        p Your past matches are...
 
-      p Your past matches are...
-
-      ol
+      ul.heart
         for id in user.past || []
           li
             div(class='person',idn=id)
 
+      if user.excluded.length > 0
+        p Skipped: (click X to un-skip)
+        //You have chosen not to be matched with...
+      
+      ul
+        for id in user.excluded || []
+          li
+            text(class='person',idn=id)
+            - conc = "".concat('/include/?id=',id)
+            text  
+            a(href=conc) X
+            
       .btm-links
         #update-account
           a(href='/home') Update account

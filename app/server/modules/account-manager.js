@@ -199,14 +199,14 @@ exports.finishConv = function(id, callback)
 	//attempt to match here
 }
 
-exports.skipConv = function(id, callback)
+exports.skipConv = function(id, excl, callback)
 {
     //getObjectId(id)
     console.log(id);
     console.log(typeof(id));
     accounts.findOne({_id: id}, function(e, o){
 	console.log(o);
-	o.excluded.push(o.current);
+	if (excl){o.excluded.push(o.current)};
 	//o.past = o.past + o.current;
 	o.current = null;
 	o.matched = false;
@@ -318,6 +318,25 @@ exports.match = function(id, callback)
 	});
     });
 };
+
+exports.include = function(id, id2, callback)
+{
+    //assume id is string
+    findById(id, function(e0,o){
+	if ((!(e0==null))){
+	    callback(e0);
+	    return;
+	}
+	o.excluded = o.excluded.filter(function(elt){
+	    String(elt._id)!=id2
+	});
+	accounts.save(o, {safe: true}, function(e) {
+	    if (e) callback(e);
+	    else callback(null);
+	});
+    });
+};
+
 // unnecessary because object id's exist
 /*
 exports.getMax = function(callback)

@@ -34,7 +34,12 @@ var promises = people.map(function(p) {
 		return t;
 	    }}, function(err) {p.textContent = "No one";})*/
 	.then(function(data) {
-	    p.textContent=data;});
+	    //if (p.tagName=='A'){
+		//p.setAttribute('href',concat('/include/?id=', p.getAttribute('idn')));
+	    //}else{
+	    p.textContent=data;
+	    //}
+	});
 });
 //    new Promise((resolve, reject) => {
 
