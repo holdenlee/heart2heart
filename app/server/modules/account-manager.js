@@ -181,6 +181,7 @@ exports.delAllRecords = function(callback)
 	accounts.remove({}, callback); // reset accounts collection for testing //
 }
 
+//takes an OBJECT id
 exports.finishConv = function(id, callback)
 {
     //getObjectId(id)
@@ -257,6 +258,61 @@ exports.findById = function(id, callback)
     findById(id, callback);
 }
 
+exports.match = function(id, callback)
+{
+    //assume id is string
+    findById(id, function(e0,o){
+	if ((!(e0==null)) || o.onBreak || o.current!=null){
+	    callback(e0);
+	    return;
+	}
+	console.log('1');
+	exports.getAllUnmatched( function(e, accounts){
+	    if (!(e==null)){
+		console.log(e);
+		callback(e);
+		return;
+	    }
+	    console.log(accounts);
+	    var sorted = accounts.sort(function(a1,a2){
+		a1.freeSince > a2.freeSince})
+	    var filtered = sorted.filter( function(elt) {
+		return o.past.indexOf(String(elt._id))==-1 &&
+			//not in excluded
+		    o.excluded.indexOf(String(elt._id))==-1 &&
+			//not in other person's excluded list
+		    elt.excluded.indexOf(id)==-1 &&
+		    String(elt._id) != id &&
+		    !elt.onBreak
+	    });
+	    console.log(filtered);
+	    if (filtered.length>0) {
+		var first_one = filtered[0];
+		var other_id = String(first_one._id);
+		//can be done in parallel, but I'm not going to bother
+		o.matched = true;
+		o.current = other_id;
+		console.log('2');
+		exports.save(o, function(e2) {//{safe: true}
+		    console.log('2.5');
+		    //do the same for the other guy
+		    findById(other_id, function(e3,o2){
+			console.log('3');
+			console.log(o2);
+			if (o2){
+			    o2.matched = true;
+			    o2.current = id;
+			    //now save
+			    exports.save(o2, function(e4) {callback(e4);return});
+			};
+		    });
+		});
+	    }else{
+		callback(null);
+	    };
+	});
+    });
+};
 // unnecessary because object id's exist
 /*
 exports.getMax = function(callback)

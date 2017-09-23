@@ -95,11 +95,10 @@ module.exports = function(app) {
 				    req.session.user = o;
 				    //should this be blocking or not?
 				    //getCurrentName(o, function(name, email) {req.session.user.currentName = vsprintf('%s (%s)', [name, email]); console.log(req.session.user)});
-				    getFormattedName(o, function(x){
-					if (x){req.session.user.currentName = x;};
+				    //getFormattedName(o, function(x){
+					//if (x){req.session.user.currentName = x;};
 					//req.session.user.currentName = 
-					res.redirect('/hearts');
-				    });
+				    res.redirect('/hearts');
 				}else{
 				    res.render('login', { title: 'Hello - Please Login To Your Account' });
 				}
@@ -110,21 +109,17 @@ module.exports = function(app) {
 	app.post('/', function(req, res){
 		AM.manualLogin(req.body['email'], req.body['pass'], function(e, o){
 			if (!o){
-				res.status(400).send(e);
+			    res.status(400).send(e);
 			}	else{
-				req.session.user = o;
+			    req.session.user = o;
 			        //getCurrentName(o, function(name, email) {req.session.user.currentName = vsprintf('%s (%s)', [name, email]); console.log(req.session.user)});
-			        getFormattedName(o,function(x){
-				    if (x){
-					req.session.user.currentName = x;};
-			            console.log(req.session.user);
-				    if (req.body['remember-me'] == 'true'){
-					res.cookie('email', o.email, { maxAge: 900000 });
-					res.cookie('pass', o.pass, { maxAge: 900000 });
-				    }
-				    res.status(200).send(o);
-				});
-			}
+			    console.log(req.session.user);
+			    if (req.body['remember-me'] == 'true'){
+				res.cookie('email', o.email, { maxAge: 900000 });
+				res.cookie('pass', o.pass, { maxAge: 900000 });
+			    }
+			    res.status(200).send(o);
+			};
 		});
 	});
 	
@@ -287,14 +282,13 @@ module.exports = function(app) {
 		}else{
 		    console.log(o);
 		    req.session.user = o;
-		    getFormattedName(o, function(x){
-			if (x){
-			    req.session.user.currentName = x;
-			}
-			res.render('hearts', {
-			    title : 'Your heart-to-hearts',
-			    udata : req.session.user
-			});
+		    //getFormattedName(o, function(x){
+		    //	if (x){
+		    //req.session.user.currentName = x;
+		    //	}
+		    res.render('hearts', {
+			title : 'Your heart-to-hearts',
+			udata : req.session.user
 		    });
 		};
 	    });
@@ -333,93 +327,28 @@ module.exports = function(app) {
         //THIS SHOULD BE POST
 	app.get('/match', function(req, res) {
 	    //if already matched, don't match!
-	    if (req.session.user == null || req.session.user.current != null) {
-		res.redirect('/hearts');
+	    if (req.session.user == null) {
+		res.redirect('/');
 	    } else {
-	    //get accounts... 
-	  	AM.getAllUnmatched( function(e, accounts){
-		    console.log(accounts);
-		    sorted = accounts.sort(function(a1,a2){
-			a1.freeSince > a2.freeSince})
-		    var filtered = sorted.filter( function(elt) {
-			//not in past
-			//console.log(req.session.user.past.indexOf(elt._id));
-			//console.log('match_types');
-			//console.log(typeof(elt._id));//object
-			//console.log(typeof(req.session.user._id));//string
-			//console.log(String(elt._id));
-			//console.log(req.session.user._id);
-			//console.log(req.session.user.past);
-			// past : [string]
-			return req.session.user.past.indexOf(String(elt._id))==-1 &&
-			//not in excluded
-			    req.session.user.excluded.indexOf(String(elt._id))==-1 &&
-			//not in other person's excluded list
-			    elt.excluded.indexOf((req.session.user._id))==-1 &&
-			    String(elt._id) != req.session.user._id &&
-			    !elt.onBreak
-		    });
-		    console.log(filtered);
-		    //get first
-		    if (filtered.length>0) {
-			var first_one = filtered[0];
-			var other_id = first_one._id;
-			console.log('req_body');
-			console.log(req.body);
-			var this_id = getObjectId(req.session.user._id);//THIS IS IMPORTANT!
-			    //req.body['_id']; //THIS IS NULL
-			console.log(other_id);
-			console.log(this_id);
-			console.log(typeof(other_id));
-			console.log(typeof(this_id));
-			//get this record and set the matched field
-			AM.getAccountByID(this_id, function(o){ //why is this null?
-			    console.log(o);
-			    if (o){
-				//!
-				req.session.user = o;
-				o.matched = true;
-				o.current = other_id;
-				//data consistency problems!
-				//req.session.user.matched = true;
-				//req.session.user.current = other_id;
-				//now save
-				//this is repeated code from account-manager
-				AM.save(o, {safe: true}, function(e) {});
-			    };
-			});
-			//do the same for the other guy
-			AM.getAccountByID(other_id, function(o){
-			    console.log(o);
-			    if (o){
-				o.matched = true;
-				o.current = this_id;
-				//now save
-				//this is repeated code from account-manager
-				AM.save(o, {safe: true}, function(e) {});
-				req.session.user.currentName = vsprintf('%s (%s)', [o.name, o.email]);
-				console.log(req.session.user);
-			    };
-			});
-		    //redirect to hearts
-		    };
-		    res.redirect('hearts');
-		    /*res.render('hearts', {
-			title : 'Your heart-to-hearts',
-			udata : req.session.user
-		    });*/
-		});
+		console.log('matching');
+		AM.match(req.session.user._id, function(e){res.redirect('/hearts')})
 	    };
 	});
-        //THIS SHOULD BE POST
+    //THIS SHOULD BE POST
 	app.get('/finish', function(req, res) {
+	    if (req.session.user == null){
+		res.redirect('/');
+		return;
+	    }
 	    //! if not logged in...
-	    console.log('finish');
+	    //console.log('finish');
 	    if (req.session.user.matched ==true){
-		console.log('matched');
-		AM.finishConv(getObjectId(req.session.user._id), function(e1){
+		//console.log('matched');
+		var this_id = req.session.user._id;
+		var other_id = req.session.user.current;
+		AM.finishConv(getObjectId(this_id), function(e1){
 		    //!Why is this a string?
-		    AM.finishConv(getObjectId(req.session.user.current), function(e2){
+		    AM.finishConv(getObjectId(other_id), function(e2){
 			//! should re-match based on order
 			//data duplication...
 			/*
@@ -434,44 +363,48 @@ module.exports = function(app) {
 			    title : 'Your heart-to-hearts',
 			    udata : req.session.user
 			});*/
-			if (req.session.user.onBreak) {
-			    res.redirect('/hearts');
-			}else{
-			    AM.refresh(req.session.user, function(e,o){
-				if (e){
-				    res.redirect('/');
-				}else{
-				    req.session.user = o;
-				    res.redirect('/match');
-				}
+			AM.match(this_id, function(e3){
+			    AM.match(other_id, function(e4){
+				res.redirect('/hearts');
 			    });
-			};
+			});
 		    });
 		});
 	    }
 	});
         //THIS IS A COPY OF FINISH EXCEPT THAT IT GOES TO EXCLUDED PILE
 	app.get('/skip', function(req, res) {
+	    if (req.session.user == null){
+		res.redirect('/');
+	    }
 	    //! if not logged in...
-	    console.log('skip');
+	    //console.log('finish');
 	    if (req.session.user.matched ==true){
-		console.log('matched');
-		AM.skipConv(getObjectId(req.session.user._id), function(e1){
+		//console.log('matched');
+		var this_id = req.session.user._id;
+		var other_id = req.session.user.current;
+		AM.skipConv(getObjectId(this_id), function(e1){
 		    //!Why is this a string?
-		    AM.skipConv(getObjectId(req.session.user.current), function(e2){
-			//also need do with other person
-			if (req.session.user.onBreak) {
-			    res.redirect('/hearts');
-			}else{
-			    AM.refresh(req.session.user, function(e,o){
-				if (e){
-				    res.redirect('/');
-				}else{
-				    req.session.user = o;
-				    res.redirect('/match');
-				}
+		    AM.skipConv(getObjectId(other_id), function(e2){
+			//! should re-match based on order
+			//data duplication...
+			/*
+			req.session.user.past.push(req.session.user.current);
+			req.session.user.currentName = null;
+			req.session.user.matched = false;
+			req.session.user.current = null;
+			*/
+			//res.redirect('/hearts');
+			/*
+			res.render('hearts', {
+			    title : 'Your heart-to-hearts',
+			    udata : req.session.user
+			});*/
+			AM.match(this_id, function(e3){
+			    AM.match(other_id, function(e4){
+				res.redirect('/hearts');
 			    });
-			};
+			});
 		    });
 		});
 	    }
@@ -482,6 +415,8 @@ module.exports = function(app) {
 		AM.setBreak(getObjectId(req.session.user._id), true, function(e1){
 		    res.redirect('/hearts');
 		});
+	    }else{
+		res.redirect('/');
 	    };
 	});
 	app.get('/resume', function(req, res) {
@@ -499,6 +434,8 @@ module.exports = function(app) {
 		    });
 		    //res.redirect('/hearts');
 		});
+	    }else{
+		res.redirect('/');
 	    };
 	});
 
