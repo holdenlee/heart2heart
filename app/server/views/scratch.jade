@@ -1,0 +1,26 @@
+.form-group
+			label.control-label.col-sm-3 Location
+			.col-sm-9
+				select.form-control#country-list(name='country')
+					each item in countries
+						option(selected=item.name == user.country)= item.name
+		hr
+		h6#sub2
+		.form-group
+			label.control-label.col-sm-3 Username
+			.col-sm-9
+				input.form-control#user-tf(type='text', name='user', value= user.user).disabled
+
+                                
+                                #account-form-container.center-vertical
+  form(method="post")#account-form.form-horizontal.well
+    .form-group
+      label.control-label.col-sm-3 Name
+      .col-sm-9
+        input.form-control#name-tf(type='text', name='name', value= user.name)
+
+ //div#name
+
+#name-tf(type='text', name='name', value= user.name)
+
+#name-tf(type='text', name='name', value= user.current)

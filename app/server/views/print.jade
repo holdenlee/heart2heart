@@ -1,0 +1,28 @@
+
+extends layout
+
+block content
+	div.container(style='margin:20px')
+		table.table.table-bordered.table-striped
+			thead
+				tr
+					th(style='width:200px') ID
+					th(style='width:180px') Name
+					th(style='width:40px') Matched
+					th(style='width:200px') Current
+					th(style='width:200px') Past
+					th(style='width:200px') Excluded
+					th(style='width:40px') On break
+					th Account Created
+			tbody
+			- for (var i = 0; i < accts.length; i++)
+				tr
+					//td= i+1
+					td= accts[i]._id
+					td= accts[i].name
+					td= accts[i].matched
+					td= accts[i].current
+					td= accts[i].past
+					td= accts[i].excluded
+					td= accts[i].onBreak
+					td= accts[i].date

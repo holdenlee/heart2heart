@@ -1,0 +1,59 @@
+// preset form values if we receive a userdata object //
+- user = typeof(udata) != 'undefined' && udata != null ? udata : { }
+// store the userId on the client side in a hidden input field //
+input(type='hidden', value= user._id)#userId
+
+h1 Your Heart-to-Hearts    
+
+p Welcome, 
+  text
+    = user.name
+  text !
+
+if user.matched
+  p You are currently matched with...
+  center
+    div(class='person',idn= user.current)
+  p
+    a(href='/finish') Finish heart-to-heart.
+  p
+    a(href='/skip') Skip heart-to-heart.
+  if user.onBreak
+    p You will not be automatically re-matched when you finish your conversation.
+    a(href='/resume') Turn on re-matching.
+  else
+    p You will be automatically re-matched when you finish your conversation.
+    a(href='/break') Turn off re-matching.
+else
+  if user.onBreak
+    p You are on break.
+    a(href='/resume') Resume.
+  else
+    p You are not currently matched with anyone. We will email you for your next heart-to-heart!
+    a(href='/break') Turn off rematching.
+//TODO: when not matched, "match me"
+//When matched, "finish", "skip" ("Are you sure?")
+
+// = user.currentName
+  
+p Your past matches are...
+
+ol
+  for id in user.past || []
+    li
+      div(class='person',idn=id)
+  
+.btm-links
+  #update-account
+    a(href='/home') Update account
+//button(type='button')#account-form-btn1.btn.btn-default//
+
+block scripts
+  script(src='/vendor/jquery-2.2.3.min.js')
+  script(src='/vendor/jquery.form.min.js')
+  script(src='/vendor/bootstrap.min.js')
+  //script(src='/js/views/login.js')
+  //script(src='/js/controllers/loginController.js')
+  //script(src='/js/form-validators/loginValidator.js')
+  //script(src='/js/form-validators/emailValidator.js')
+  script(src='/js/views/hearts.js')
