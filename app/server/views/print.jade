@@ -14,6 +14,7 @@ block content
 					th(style='width:200px') Excluded
 					th(style='width:40px') On break
 					th Account Created
+					th Free Since
 			tbody
 			- for (var i = 0; i < accts.length; i++)
 				tr
@@ -26,3 +27,4 @@ block content
 					td= accts[i].excluded
 					td= accts[i].onBreak
 					td= accts[i].date
+					td= accts[i].freeSince                                        

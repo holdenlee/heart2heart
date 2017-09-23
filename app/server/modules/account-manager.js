@@ -78,11 +78,12 @@ exports.addNewAccount = function(newData, callback)
 					// append date stamp when record was created //
 						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
 //matched, past, current. 
+					        newData.freeSince = moment().format('MMMM Do YYYY, h:mm:ss a');
 					        newData.matched = false;
 					        newData.past = [];
 					        newData.current = null;
 					        newData.excluded = [];
-					        newData.onBreak = false;
+					        newData.onBreak = true;
 						accounts.insert(newData, {safe: true}, callback);
 					});
 				}

@@ -321,8 +321,10 @@ module.exports = function(app) {
 		    a = accounts[i];
 		    a.matched = false;
 		    a.past = [];
+		    a.excluded = [];
 		    a.current = null;
-		    console.log(a);
+		    a.onBreak = true;
+		    //console.log(a);
 		    AM.save(a, {safe: true}, function(e) {});
 		};
 		res.redirect('/print');
@@ -330,29 +332,32 @@ module.exports = function(app) {
 	});
         //THIS SHOULD BE POST
 	app.get('/match', function(req, res) {
-	    //req.session.user
+	    //if already matched, don't match!
+	    if (req.session.user == null || req.session.user.current != null) {
+		res.redirect('/hearts');
+	    } else {
 	    //get accounts... 
-	    //req.session.user
-	        //console.log('request');
-	        //console.log(req);
-		AM.getAllUnmatched( function(e, accounts){
+	  	AM.getAllUnmatched( function(e, accounts){
 		    console.log(accounts);
-		    var filtered = accounts.filter( function(elt) {
+		    sorted = accounts.sort(function(a1,a2){
+			a1.freeSince > a2.freeSince})
+		    var filtered = sorted.filter( function(elt) {
 			//not in past
 			//console.log(req.session.user.past.indexOf(elt._id));
-			console.log('match_types');
-			console.log(typeof(elt._id));//object
-			console.log(typeof(req.session.user._id));//string
-			console.log(String(elt._id));
-			console.log(req.session.user._id);
-			console.log(req.session.user.past);
+			//console.log('match_types');
+			//console.log(typeof(elt._id));//object
+			//console.log(typeof(req.session.user._id));//string
+			//console.log(String(elt._id));
+			//console.log(req.session.user._id);
+			//console.log(req.session.user.past);
 			// past : [string]
 			return req.session.user.past.indexOf(String(elt._id))==-1 &&
 			//not in excluded
-			req.session.user.excluded.indexOf(String(elt._id))==-1 &&
+			    req.session.user.excluded.indexOf(String(elt._id))==-1 &&
 			//not in other person's excluded list
-			elt.excluded.indexOf((req.session.user._id))==-1 &&
-			String(elt._id) != req.session.user._id
+			    elt.excluded.indexOf((req.session.user._id))==-1 &&
+			    String(elt._id) != req.session.user._id &&
+			    !elt.onBreak
 		    });
 		    console.log(filtered);
 		    //get first
@@ -404,6 +409,7 @@ module.exports = function(app) {
 			udata : req.session.user
 		    });*/
 		});
+	    };
 	});
         //THIS SHOULD BE POST
 	app.get('/finish', function(req, res) {
@@ -422,12 +428,24 @@ module.exports = function(app) {
 			req.session.user.matched = false;
 			req.session.user.current = null;
 			*/
-			res.redirect('/hearts');
+			//res.redirect('/hearts');
 			/*
 			res.render('hearts', {
 			    title : 'Your heart-to-hearts',
 			    udata : req.session.user
 			});*/
+			if (req.session.user.onBreak) {
+			    res.redirect('/hearts');
+			}else{
+			    AM.refresh(req.session.user, function(e,o){
+				if (e){
+				    res.redirect('/');
+				}else{
+				    req.session.user = o;
+				    res.redirect('/match');
+				}
+			    });
+			};
 		    });
 		});
 	    }
@@ -441,7 +459,19 @@ module.exports = function(app) {
 		AM.skipConv(getObjectId(req.session.user._id), function(e1){
 		    //!Why is this a string?
 		    AM.skipConv(getObjectId(req.session.user.current), function(e2){
-			res.redirect('/hearts');
+			//also need do with other person
+			if (req.session.user.onBreak) {
+			    res.redirect('/hearts');
+			}else{
+			    AM.refresh(req.session.user, function(e,o){
+				if (e){
+				    res.redirect('/');
+				}else{
+				    req.session.user = o;
+				    res.redirect('/match');
+				}
+			    });
+			};
 		    });
 		});
 	    }
@@ -458,7 +488,16 @@ module.exports = function(app) {
 	    //! if not logged in...
 	    if (req.session.user != null){
 		AM.setBreak(getObjectId(req.session.user._id), false, function(e1){
-		    res.redirect('/hearts');
+		    //attempt to rematch
+		    AM.refresh(req.session.user, function(e,o){
+			if (e){
+			    res.redirect('/');
+			}else{
+			    req.session.user = o;
+			    res.redirect('/match');
+			}
+		    });
+		    //res.redirect('/hearts');
 		});
 	    };
 	});
