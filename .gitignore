@@ -3,4 +3,3 @@ node_modules
 app/server/modules/email-settings-mine.js
 *#
 *~
-app/server/modules/email-dispatcher.js

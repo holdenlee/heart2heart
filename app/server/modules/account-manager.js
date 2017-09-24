@@ -9,7 +9,10 @@ var moment 		= require('moment');
 */
 
 var dbName = process.env.DB_NAME || 'node-login';
-var dbHost = process.env.DB_HOST || 'localhost'
+    //'twodh2h';
+var dbHost = process.env.DB_HOST || 'localhost';
+    //process.env.DB_HOST || 'localhost'
+//MLAB_URI
 var dbPort = process.env.DB_PORT || 27017;
 
 var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
