@@ -99,7 +99,7 @@ exports.updateAccount = function(newData, callback)
     getAccounts(function(accounts){
 	accounts.findOne({_id:getObjectId(newData.id)}, function(e, o){
 		o.name 		= newData.name;
-		o.email 	= newData.email;
+		//o.email 	= newData.email;
 		o.country 	= newData.country;
 		if (newData.pass == ''){
 		    //need to save!
