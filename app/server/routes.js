@@ -17,7 +17,7 @@ var getObjectId = function(id)
 var getCurrentName = function(o, callback)
 {
     //should be ID object
-    console.log('getCurrentName');
+    //console.log('getCurrentName');
     //console.log(o.current);
     if (o==null || o.current==null) {
 	callback(null);
@@ -25,7 +25,7 @@ var getCurrentName = function(o, callback)
     }
     AM.getAccountByID(o.current, function(x) {
 	//if (x){
-	console.log(x); 
+	//console.log(x); 
 	if (x){
 	    callback([x.name, x.email]);
 	}else{
@@ -247,7 +247,7 @@ module.exports = function(app) {
 	
 // view & delete accounts //
 	
-	app.get('/print', function(req, res) {
+	app.get('/printzzzzz', function(req, res) {
 		AM.getAllRecords( function(e, accounts){
 			res.render('print', { title : 'Account List', accts : accounts });
 		})
@@ -267,7 +267,7 @@ module.exports = function(app) {
 	//THIS SHOULD BE POST
 	app.get('/resetzzzzz', function(req, res) {
 		AM.delAllRecords(function(){
-			res.redirect('/print');	
+			res.redirect('/printzzzzz');	
 		});
 	});
         //need to pass user information
@@ -287,7 +287,7 @@ module.exports = function(app) {
 		    //	if (x){
 		    //req.session.user.currentName = x;
 		    //	}
-		    console.log('rendering hearts');
+		    //console.log('rendering hearts');
 		    res.render('hearts', {
 			title : 'Your heart-to-hearts',
 			udata : req.session.user
@@ -298,8 +298,8 @@ module.exports = function(app) {
 	app.get('/matchtest', function(req, res) {
 	    //req.session.user
 	    //get accounts... 
-	    console.log(req.session.user.past);
-	    console.log(req.session.user.excluded);
+	    //console.log(req.session.user.past);
+	    //console.log(req.session.user.excluded);
 	    res.redirect('hearts');
 	    /*res.render('hearts', {
 		title : 'Your heart-to-hearts',
@@ -323,7 +323,7 @@ module.exports = function(app) {
 		    //console.log(a);
 		    AM.save(a, {safe: true}, function(e) {});
 		};
-		res.redirect('/print');
+		res.redirect('/printzzzzz');
 	    });
 	});
         //THIS SHOULD BE POST
@@ -333,7 +333,7 @@ module.exports = function(app) {
 		res.redirect('/');
 	    } else {
 		//console.log('matching');
-		HM.matchAndEmail(req.session.user._id, function(e,o){console.log('redirecting match to hearts');res.redirect('/hearts')})
+		HM.matchAndEmail(req.session.user._id, function(e,o){res.redirect('/hearts')})
 	    };
 	});
     //THIS SHOULD BE POST
@@ -367,7 +367,7 @@ module.exports = function(app) {
 			});*/
 			HM.matchAndEmail(this_id, function(e3,o3){
 			    HM.matchAndEmail(other_id, function(e4,o4){
-				console.log('redirect to hearts');
+				//console.log('redirect to hearts');
 				res.redirect('/hearts');
 			    });
 			});
@@ -446,7 +446,7 @@ module.exports = function(app) {
     app.get('/getNameAndEmail', function(req,res) {
 	//console.log(req.query);
 	getNameAndEmail(req.query['id'], function(x) {
-	    console.log(x);
+	    //console.log(x);
 	    if (x){
 		res.send(vsprintf('%s (%s)', x));
 	    }else{

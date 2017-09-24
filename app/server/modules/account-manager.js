@@ -13,10 +13,10 @@ var moment 		= require('moment');
 var uri = process.env.MLAB_URI || 'mongodb://<dbuser>:<dbpassword>@ds147864.mlab.com:47864/twodh2h'
 
 function getAccounts(callback){
-    console.log(uri);
+    //console.log(uri);
     MongoClient.connect(uri, function(err, db) {
-	console.log(err);
-	console.log(db.collection('accounts'));
+	//console.log(err);
+	//console.log(db.collection('accounts'));
 	callback(db.collection('accounts'));
 	//db.close();
     });
@@ -63,9 +63,9 @@ exports.addNewAccount = function(newData, callback)
 //find user not needed
     getAccounts(function(accounts){
 			accounts.findOne({email:newData.email}, function(e, o) {
-			    console.log('in addNewAccount');
-			    console.log(e);
-			    console.log(o);
+			    //console.log('in addNewAccount');
+			    //console.log(e);
+			    //console.log(o);
 				if (o){
 					callback('email-taken');
 				}	else{
@@ -155,7 +155,7 @@ exports.getAccountByEmail = function(email, callback)
 exports.getAccountByID = function(id, callback)
 {
     getAccounts(function(accounts){
-	accounts.findOne({_id:id}, function(e, o){ console.log(e);console.log(o);callback(o); });
+	accounts.findOne({_id:id}, function(e, o){ callback(o); });
     });
 }
 
@@ -295,7 +295,7 @@ exports.match = function(id, callback)
 	//console.log('1');
 	exports.getAllUnmatched( function(e, accounts){
 	    if (!(e==null)){
-		console.log(e);
+		//console.log(e);
 		callback(e);
 		return;
 	    }

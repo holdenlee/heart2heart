@@ -7,13 +7,13 @@ module.exports = HM;
 //callback(e,o)
 HM.matchAndEmail = function(id, callback)
 {
-    console.log('matchAndEmail')
+    //console.log('matchAndEmail')
     AM.match(id, function(e,o){
 	if (o==null){//if not matched, don't dispatch emails!
-	    console.log('invalid match');
+	    //console.log('invalid match');
 	    callback(e);
 	}else{
-	    console.log('valid match');
+	    //console.log('valid match');
 	    HM.dispatchHeartEmails(id, callback);
 	};
     });
@@ -21,7 +21,7 @@ HM.matchAndEmail = function(id, callback)
 
 HM.dispatchHeartEmails = function(id, callback)
 {
-    console.log('2 emails');
+    //console.log('2 emails');
     HM.dispatchHeartEmail(id, function(e, acct){
 	if (!(e==null)){
 	    callback(e);
@@ -36,17 +36,17 @@ HM.dispatchHeartEmails = function(id, callback)
 //do this twice
 HM.dispatchHeartEmail = function(id, callback)
 {
-    console.log('1 email');
+    //console.log('1 email');
     //console.log('emailing');
     AM.findById(id, function(e,account){
 	if (!(e==null)){
-	    console.log(e);
+	    //console.log(e);
 	    callback(e);
 	    return;
 	}
 	HM.heartEmail(account, function(e2,message){
 	    if (!(e2==null)){
-		console.log(e2);
+		//console.log(e2);
 		callback(e2);
 		return;
 	    };
@@ -59,10 +59,10 @@ HM.dispatchHeartEmail = function(id, callback)
 		attachment   : message
 	    }, function(e3, message3){
 		if (!(e3==null)){
-		    console.log(e3);
+		    //console.log(e3);
 		    callback(e3);
 		}else{
-		    console.log(message);
+		    //console.log(message);
 		    callback(null,account);
 		};
 	    });
