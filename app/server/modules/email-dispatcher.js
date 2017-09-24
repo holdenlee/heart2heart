@@ -22,7 +22,7 @@ EM.dispatchResetPasswordLink = function(account, callback)
 	}, callback );
 }
 
-var base_url = 'https://localhost:3000';
+var base_url = process.env.BASE_URL || 'https://localhost:3000';
 EM.base_url = base_url;
 
 EM.admin_email = '2dheart2heart@gmail.com';
