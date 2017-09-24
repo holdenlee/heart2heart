@@ -34,7 +34,7 @@ var dbName = process.env.DB_NAME || 'node-login';
 //var dbURL = 'mongodb://'+dbHost+':'+dbPort+'/'+dbName;
 //if (app.get('env') == 'live'){
 // prepend url with authentication credentials // 
-dbURL = 'mongodb://'+process.env.DB_USER+':'+process.env.DB_PASS+'@'+dbHost+':'+dbPort+'/'+dbName;
+var dbURL = 'mongodb://'+process.env.DB_USER+':'+process.env.DB_PASS+'@'+dbHost+':'+dbPort+'/'+dbName;
 //}
 
 app.use(session({

@@ -19,8 +19,8 @@ for (i = 0; i < x.length; i++) {
 
 var people = Array.prototype.slice.call(document.getElementsByClassName("person"));
 
-console.log(typeof(people));
-console.log(people);
+//console.log(typeof(people));
+//console.log(people);
 
 var promises = people.map(function(p) {
     fetch("".concat('/getNameAndEmail/?id=', p.getAttribute('idn')))

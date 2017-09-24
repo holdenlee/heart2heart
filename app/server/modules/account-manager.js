@@ -354,6 +354,7 @@ exports.match = function(id, callback)
 exports.include = function(id, id2, callback)
 {
     //assume id is string
+    getAccounts(function(accounts){
     findById(id, function(e0,o){
 	if ((!(e0==null))){
 	    callback(e0);
@@ -366,6 +367,7 @@ exports.include = function(id, id2, callback)
 	    if (e) callback(e);
 	    else callback(null);
 	});
+    });
     });
 };
 
