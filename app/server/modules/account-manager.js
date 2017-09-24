@@ -1,46 +1,32 @@
 
 var crypto 		= require('crypto');
-var MongoDB 	= require('mongodb').Db;
-var Server 		= require('mongodb').Server;
+var mongodb 	= require('mongodb');
+//var Server 		= require('mongodb').Server;
+var MongoClient = mongodb.MongoClient;
 var moment 		= require('moment');
 
 /*
 	ESTABLISH DATABASE CONNECTION
 */
 
-var dbName = process.env.DB_NAME || 'node-login';
-    //'twodh2h';
-var dbHost = process.env.DB_HOST || 'localhost';
-    //process.env.DB_HOST || 'localhost'
-//MLAB_URI
-var dbPort = process.env.DB_PORT || 27017;
+//don't hardcode in password
+var uri = process.env.MLAB_URI || 'mongodb://<dbuser>:<dbpassword>@ds147864.mlab.com:47864/twodh2h'
 
-var db = new MongoDB(dbName, new Server(dbHost, dbPort, {auto_reconnect: true}), {w: 1});
-db.open(function(e, d){
-	if (e) {
-	    console.log(e);
-	} else {
-		if (process.env.NODE_ENV == 'live') {
-			db.authenticate(process.env.DB_USER, process.env.DB_PASS, function(e, res) {
-				if (e) {
-					console.log('mongo :: error: not authenticated', e);
-				}
-				else {
-					console.log('mongo :: authenticated and connected to database :: "'+dbName+'"');
-				}
-			});
-		}	else{
-			console.log('mongo :: connected to database :: "'+dbName+'"');
-		}
-	}
-});
-
-var accounts = db.collection('accounts');
+function getAccounts(callback){
+    console.log(uri);
+    MongoClient.connect(uri, function(err, db) {
+	console.log(err);
+	console.log(db.collection('accounts'));
+	callback(db.collection('accounts'));
+	//db.close();
+    });
+}
 
 /* login validation methods */
 
 exports.autoLogin = function(email, pass, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({email:email}, function(e, o) {
 		if (o){
 			o.pass == pass ? callback(o) : callback(null);
@@ -48,10 +34,12 @@ exports.autoLogin = function(email, pass, callback)
 			callback(null);
 		}
 	});
+    });
 }
 
 exports.manualLogin = function(email, pass, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({email:email}, function(e, o) {
 		if (o == null){
 			callback('user-not-found');
@@ -65,6 +53,7 @@ exports.manualLogin = function(email, pass, callback)
 			});
 		}
 	});
+    });
 }
 
 /* record insertion, update & deletion methods */
@@ -72,7 +61,11 @@ exports.manualLogin = function(email, pass, callback)
 exports.addNewAccount = function(newData, callback)
 {
 //find user not needed
+    getAccounts(function(accounts){
 			accounts.findOne({email:newData.email}, function(e, o) {
+			    console.log('in addNewAccount');
+			    console.log(e);
+			    console.log(o);
 				if (o){
 					callback('email-taken');
 				}	else{
@@ -92,6 +85,7 @@ exports.addNewAccount = function(newData, callback)
 					});
 				}
 			});
+    });
 }
 /*
 exports.test = function(callback)
@@ -102,6 +96,7 @@ exports.test = function(callback)
 
 exports.updateAccount = function(newData, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({_id:getObjectId(newData.id)}, function(e, o){
 		o.name 		= newData.name;
 		o.email 	= newData.email;
@@ -122,10 +117,12 @@ exports.updateAccount = function(newData, callback)
 			});
 		}
 	});
+    });
 }
 
 exports.updatePassword = function(email, newPass, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({email:email}, function(e, o){
 		if (e){
 			callback(e, null);
@@ -136,58 +133,74 @@ exports.updatePassword = function(email, newPass, callback)
 			});
 		}
 	});
+    });
 }
 
 /* account lookup methods */
 
 exports.deleteAccount = function(id, callback)
 {
+    getAccounts(function(accounts){
 	accounts.remove({_id: getObjectId(id)}, callback);
+    });
 }
 
 exports.getAccountByEmail = function(email, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({email:email}, function(e, o){ callback(o); });
+    });
 }
 
 exports.getAccountByID = function(id, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({_id:id}, function(e, o){ console.log(e);console.log(o);callback(o); });
+    });
 }
 
 exports.validateResetLink = function(email, passHash, callback)
 {
+    getAccounts(function(accounts){
 	accounts.find({ $and: [{email:email, pass:passHash}] }, function(e, o){
 		callback(o ? 'ok' : null);
 	});
+    });
 }
 
 exports.getAllRecords = function(callback)
 {
+    getAccounts(function(accounts){
 	accounts.find().toArray(
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
 	});
+    });
 }
 
 exports.getAllUnmatched = function(callback)
 {
+    getAccounts(function(accounts){
 	accounts.find({matched: false}).toArray(
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
 	});
+    });
 }
 
 exports.delAllRecords = function(callback)
 {
+    getAccounts(function(accounts){
 	accounts.remove({}, callback); // reset accounts collection for testing //
+    });
 }
 
 //takes an OBJECT id
 exports.finishConv = function(id, callback)
 {
+    getAccounts(function(accounts){
     //getObjectId(id)
     //console.log(id);
     //console.log(typeof(id));
@@ -200,10 +213,12 @@ exports.finishConv = function(id, callback)
 	o.freeSince = moment();
 	accounts.save(o, {safe: true}, callback);});
 	//attempt to match here
+    });
 }
 
 exports.skipConv = function(id, excl, callback)
 {
+    getAccounts(function(accounts){
     //getObjectId(id)
     //console.log(id);
     //console.log(typeof(id));
@@ -217,13 +232,16 @@ exports.skipConv = function(id, excl, callback)
 	accounts.save(o, {safe: true}, callback);
     });
 	//attempt to match here
+    });
 }
 
 exports.setBreak = function(id, br, callback)
 {
+    getAccounts(function(accounts){
     accounts.findOne({_id: id}, function(e, o){
 	o.onBreak = br;
 	accounts.save(o, {safe: true}, callback);
+    });
     });
 }
 
@@ -256,7 +274,9 @@ exports.addHearted = function(id, id2, callback)
 */
 exports.save = function(o, callback)
 {
-    accounts.save(o, {safe: true}, callback);
+    getAccounts(function(accounts){
+        accounts.save(o, {safe: true}, callback);
+    });
 }
 
 exports.findById = function(id, callback)
@@ -399,19 +419,23 @@ var getObjectId = function(id)
 
 var findById = function(id, callback)
 {
+    getAccounts(function(accounts){
 	accounts.findOne({_id: getObjectId(id)},
 		function(e, res) {
 		if (e) callback(e)
 		else callback(null, res)
 	});
+    });
 }
 
 var findByMultipleFields = function(a, callback)
 {
 // this takes an array of name/val pairs to search against {fieldName : 'value'} //
+    getAccounts(function(accounts){
 	accounts.find( { $or : a } ).toArray(
 		function(e, results) {
 		if (e) callback(e)
 		else callback(null, results)
 	});
+    });
 }
