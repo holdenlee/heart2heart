@@ -265,7 +265,7 @@ module.exports = function(app) {
 	    });
 	});
 	//THIS SHOULD BE POST
-	app.get('/reset', function(req, res) {
+	app.get('/resetzzzzz', function(req, res) {
 		AM.delAllRecords(function(){
 			res.redirect('/print');	
 		});
@@ -310,7 +310,7 @@ module.exports = function(app) {
 	    res.redirect('/print');
 	});*/
         //THIS SHOULD BE POST
-        app.get('/resetall', function(req, res) {
+        app.get('/resetallzzzzz', function(req, res) {
 	    AM.getAllRecords( function(e, accounts) {
 		//for (a in accounts) {
 		for (i = 0, len = accounts.length; i < len; i++){
