@@ -198,8 +198,11 @@ module.exports = function(app) {
 
 	app.post('/lost-password', function(req, res){
 	// look up the user's account via their email //
+	    //console.log('lost password');
+	    //console.log(req.body['email']);
 		AM.getAccountByEmail(req.body['email'], function(o){
 			if (o){
+			    //console.log('found');
 				EM.dispatchResetPasswordLink(o, function(e, m){
 				// this callback takes a moment to return //
 				// TODO add an ajax loader to give user feedback //
@@ -211,6 +214,7 @@ module.exports = function(app) {
 					}
 				});
 			}	else{
+			    //console.log('not found');
 				res.status(400).send('email-not-found');
 			}
 		});
@@ -221,6 +225,7 @@ module.exports = function(app) {
 		var passH = req.query["p"];
 		AM.validateResetLink(email, passH, function(e){
 			if (e != 'ok'){
+			        console.log(e);
 				res.redirect('/');
 			} else{
 	// save the user's email in a session instead of sending to the client //
@@ -252,7 +257,7 @@ module.exports = function(app) {
 			res.render('print', { title : 'Account List', accts : accounts });
 		})
 	});
-	
+	/*
 	app.post('/delete', function(req, res){
 		AM.deleteAccount(req.body.id, function(e, obj){
 			if (!e){
@@ -263,13 +268,14 @@ module.exports = function(app) {
 				res.status(400).send('record not found');
 			}
 	    });
-	});
+	});*/
 	//THIS SHOULD BE POST
+    /*
 	app.get('/resetzzzzz', function(req, res) {
 		AM.delAllRecords(function(){
 			res.redirect('/printzzzzz');	
 		});
-	});
+	});*/
         //need to pass user information
 	app.get('/hearts', function(req, res) {
 	        //if (req.session.user == null){
@@ -310,6 +316,7 @@ module.exports = function(app) {
 	    res.redirect('/print');
 	});*/
         //THIS SHOULD BE POST
+    /*
         app.get('/resetallzzzzz', function(req, res) {
 	    AM.getAllRecords( function(e, accounts) {
 		//for (a in accounts) {
@@ -325,7 +332,7 @@ module.exports = function(app) {
 		};
 		res.redirect('/printzzzzz');
 	    });
-	});
+	});*/
         //THIS SHOULD BE POST
 	app.get('/match', function(req, res) {
 	    //if already matched, don't match!

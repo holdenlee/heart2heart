@@ -37,16 +37,16 @@ HM.dispatchHeartEmails = function(id, callback)
 HM.dispatchHeartEmail = function(id, callback)
 {
     //console.log('1 email');
-    //console.log('emailing');
+    console.log('emailing');
     AM.findById(id, function(e,account){
 	if (!(e==null)){
-	    //console.log(e);
+	    console.log(e);
 	    callback(e);
 	    return;
 	}
 	HM.heartEmail(account, function(e2,message){
 	    if (!(e2==null)){
-		//console.log(e2);
+		console.log(e2);
 		callback(e2);
 		return;
 	    };
@@ -59,10 +59,10 @@ HM.dispatchHeartEmail = function(id, callback)
 		attachment   : message
 	    }, function(e3, message3){
 		if (!(e3==null)){
-		    //console.log(e3);
+		    console.log(e3);
 		    callback(e3);
 		}else{
-		    //console.log(message);
+		    console.log(message);
 		    callback(null,account);
 		};
 	    });
@@ -80,7 +80,7 @@ HM.heartEmail = function(o, callback)
 	var heart_link = EM.base_url + '/hearts';
 	var html = "<html><body>";
 	html += "Dear "+o.name+",<br><br>";
-	html += "Thanks for participating in Artichoke Heart-to-Hearts! Your conversation partner is "+o1.name+" ("+o1.email+").<br><br>";
+	html += "Thanks for participating in Artichoke Heart-to-Hearts! Your next conversation partner is "+o1.name+" ("+o1.email+").<br><br>";
 	html += "Get in touch and schedule a meal and conversation (or other activity) together sometime this coming week.<br><br>";
 	html += "Once you have finished your conversation, please log on to <a href='"+heart_link+"'>Heart-to-Hearts</a> and get your next match. (Only one person needs to do this.) If you will not be available, please change your availability beforehand.<br><br>";
 	html += "Cheers,<br>";

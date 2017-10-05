@@ -32,7 +32,7 @@ EM.composeEmail = function(o)
 	var link = base_url+'/reset-password?e='+o.email+'&p='+o.pass;
 	var html = "<html><body>";
 		html += "Hi "+o.name+",<br><br>";
-		html += "You have requested a password reset for your heart-to-hearts account.";
+		html += "You have requested a password reset for your heart-to-hearts account. ";
 		html += "<a href='"+link+"'>Click here to reset your password</a><br><br>";
 		html += "Cheers,<br>";
 		html += "Holden<br><br>";

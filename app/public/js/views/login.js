@@ -32,10 +32,12 @@ $(document).ready(function(){
 	$('#get-credentials-form').ajaxForm({
 		url: '/lost-password',
 		beforeSubmit : function(formData, jqForm, options){
-			if (ev.validateEmail($('#email-tf').val())){
+		    console.log($('#email-tf2').val());
+			if (ev.validateEmail($('#email-tf2').val())){
 				ev.hideEmailAlert();
 				return true;
 			}	else{
+			        console.log('failed');
 				ev.showEmailAlert("<b>Error!</b> Please enter a valid email address");
 				return false;
 			}
