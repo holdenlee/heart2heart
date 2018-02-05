@@ -61,31 +61,35 @@ exports.manualLogin = function(email, pass, callback)
 exports.addNewAccount = function(newData, callback)
 {
 //find user not needed
-    getAccounts(function(accounts){
+    if (newData.invite_code != process.env.JOIN_CODE){
+	callback('invalid-invite-code');
+    }else{
+	getAccounts(function(accounts){
 			accounts.findOne({email:newData.email}, function(e, o) {
 			    //console.log('in addNewAccount');
 			    //console.log(e);
 			    //console.log(o);
-				if (o){
-					callback('email-taken');
-				}	else{
-					saltAndHash(newData.pass, function(hash){
-						newData.pass = hash;
-					// append date stamp when record was created //
-						newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
+			    if (o){
+				callback('email-taken');
+			    }	else{
+				saltAndHash(newData.pass, function(hash){
+				    newData.pass = hash;
+				    // append date stamp when record was created //
+				    newData.date = moment().format('MMMM Do YYYY, h:mm:ss a');
 //matched, past, current. 
-					        newData.freeSince = moment();
+				    newData.freeSince = moment();
 //o.freeSince = moment();
-					        newData.matched = false;
-					        newData.past = [];
-					        newData.current = null;
-					        newData.excluded = [];
-					        newData.onBreak = true;
-						accounts.insert(newData, {safe: true}, callback);
-					});
-				}
+				    newData.matched = false;
+				    newData.past = [];
+				    newData.current = null;
+				    newData.excluded = [];
+				    newData.onBreak = true;
+				    accounts.insert(newData, {safe: true}, callback);
+				});
+			    }
 			});
-    });
+	});
+    }
 }
 /*
 exports.test = function(callback)

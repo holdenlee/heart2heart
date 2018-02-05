@@ -17,6 +17,9 @@ $(document).ready(function(){
 			}	//else if (e.responseText == 'username-taken'){
 			    //av.showInvalidUserName();
 			//}
+		        if (e.responseText == 'invalid-invite-code'){
+			    av.showInvalidInviteCode();
+			}
 		}
 	});
 	$('#name-tf').focus();

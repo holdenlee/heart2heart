@@ -49,6 +49,12 @@ AccountValidator.prototype.showInvalidEmail = function()
 	this.showErrors(['That email address is already in use.']);
 }
 
+AccountValidator.prototype.showInvalidInviteCode = function()
+{
+	this.controlGroups[1].addClass('error');
+	this.showErrors(['Invalid invite code.']);
+}
+
 //AccountValidator.prototype.showInvalidUserName = function()
 //{
 //	this.controlGroups[2].addClass('error');
@@ -70,7 +76,7 @@ AccountValidator.prototype.validateForm = function()
 //		e.push('Please Choose A Username');
 //	}
 	if (this.validatePassword(this.formFields[2].val()) == false) {
-		this.controlGroups[3].addClass('error');
+		this.controlGroups[2].addClass('error');
 		e.push('Password Should Be At Least 1 Character');
 	}
 	if (e.length) this.showErrors(e);
