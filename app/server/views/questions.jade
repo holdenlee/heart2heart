@@ -1,0 +1,61 @@
+extends layout
+
+block content
+
+  nav.navbar.navbar-default.navbar-fixed-top
+    //navbar-static-top
+    .container
+      .navbar-header
+        .navbar-brand Heart-to-hearts
+      #navbar.collapse.navbar-collapse
+        ul.nav.navbar-nav
+          li
+            a(href='/hearts') My heart-to-hearts
+          li
+            a(href='/home') My account
+          li
+            a(href='/questions') Questions
+          li
+            .navbar-btn#btn-logout.btn.btn-default
+              | Sign Out
+      //ul.nav.navbar-nav.navbar-right
+      //  li
+      //    .navbar-btn#btn-logout.btn.btn-default
+      //      | Sign Out
+  // preset form values if we receive a userdata object //
+  - user = typeof(udata) != 'undefined' && udata != null ? udata : { }
+  // store the userId on the client side in a hidden input field //
+  input(type='hidden', value= user._id)#userId
+
+  #question-container.center-vertical
+    form(method="post")#question-form.form-horizontal.well
+      h2 Conversation menu
+      hr
+      .form-group
+        label.control-label.col-sm-3 Suggest question:
+        .col-sm-9
+          input.form-control#q-tf(type='text', name='question')  
+      .form-buttons
+        button(type='submit')#question-form-btn-add.btn.btn-primary
+      .clearfix
+      hr
+      ul.heart
+        for q in questions || []
+          li
+            = q.question
+            
+block scripts
+  script(src='/vendor/jquery-2.2.3.min.js')
+  script(src='/vendor/jquery.form.min.js')
+  script(src='/vendor/bootstrap.min.js')
+  //script(src='/js/views/login.js')
+  //script(src='/js/controllers/loginController.js')
+  //script(src='/js/form-validators/loginValidator.js')
+  //script(src='/js/form-validators/emailValidator.js')
+  //script(src='/js/views/hearts.js')
+  //script(src='/js/views/home.js')
+  script(src='/js/views/questions.js')
+  //for logout //this has to come after
+  script(src='/js/views/home.js')
+  script(src='/js/controllers/homeController.js')
+  script(src='/js/controllers/questionController.js')

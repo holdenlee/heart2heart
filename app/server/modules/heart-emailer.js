@@ -78,10 +78,12 @@ HM.heartEmail = function(o, callback)
 	    callback(e);
 	}
 	var heart_link = EM.base_url + '/hearts';
+	var q_link = EM.base_url + '/questions';
 	var html = "<html><body>";
 	html += "Dear "+o.name+",<br><br>";
 	html += "Thanks for participating in Artichoke Heart-to-Hearts! Your next conversation partner is "+o1.name+" ("+o1.email+").<br><br>";
 	html += "Get in touch and schedule a meal and conversation (or other activity) together sometime this coming week.<br><br>";
+	html += "For inspiration, check out <a href='"+q_link+"'>the conversation menu</a> (and add your own questions!).<br><br>"
 	html += "Once you have finished your conversation, please log on to <a href='"+heart_link+"'>Heart-to-Hearts</a> and get your next match. (Only one person needs to do this.) If you will not be available, please change your availability beforehand.<br><br>";
 	html += "Cheers,<br>";
 	html += "Holden<br><br>";

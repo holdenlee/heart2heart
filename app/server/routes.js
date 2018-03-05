@@ -3,6 +3,7 @@
 var AM = require('./modules/account-manager');
 var EM = require('./modules/email-dispatcher');
 var HM = require('./modules/heart-emailer');
+var QM = require('./modules/question-manager');
 
 var sprintf = require('sprintf-js').sprintf,
     vsprintf = require('sprintf-js').vsprintf
@@ -301,6 +302,32 @@ module.exports = function(app) {
 		    });
 		};
 	    });
+	});
+        app.get('/questions', function(req,res) {
+	    if (req.session.user == null){
+		res.redirect('/');
+	    }else{
+		QM.getAllQs(function(qs){
+		    res.render('questions', {
+			title : 'Questions',
+			udata: req.session.user,
+			questions : qs})
+		    //,
+		    //udata : req.session.user
+		});
+	    }
+	});
+	app.post('/questions', function(req, res){
+		QM.insertQuestion({
+		    user: req.session.user._id, //body['user'],
+		    question: req.body['question']
+		}, function(e){
+			if (e){
+				res.status(400).send(e);
+			}	else{
+				res.status(200).send('ok');
+			}
+		});
 	});
 	app.get('/matchtest', function(req, res) {
 	    //req.session.user
